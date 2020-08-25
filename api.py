@@ -1,5 +1,4 @@
 from flask import Flask, request, json
-
 from Validations import Validations
 from data.SQLiteDataLayer import SqLiteDataLayer
 from flask_cors import CORS
@@ -16,8 +15,9 @@ cors = CORS(app)
 def set_location():
     try:
         data = request.json
-        lat = Decimal(data["lat"])
-        long = Decimal(data["long"])
+        print(data)
+        lat = float(data["data"]["lat"])
+        long = float(data["data"]["long"])
         Validations.validate_lat(lat)
         Validations.validate_long(long)
         data_layer.add_address(lat, long)
