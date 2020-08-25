@@ -6,9 +6,9 @@ app = Flask(__name__)
 cors = CORS(app)
 
 
-@app.route("/")
-def hello_world():
-    return "Hello World"
+@app.route("/", methods=["POST"])
+def get_location():
+    data = request.json
 
 
 
