@@ -1,17 +1,17 @@
-import mysql.connector
 from data.DataLayer import DataLayer
+import mysql.connector
 from decouple import config
 
 class SqlDataLayer(DataLayer):
     def __init__(self):
-        super.__init__()
-        self.connect()
+        super().__init__()
+        self.__connect()
 
     def __connect(self):
         try:
             self.__my_sql = mysql.connector.connect(
                 host="127.0.0.1",
-                user=config('USER'),
+                user=config('MYSQL_USER'),
                 password=config('PASSWORD'),
                 database='roofarm'
             )
@@ -42,7 +42,7 @@ class SqlDataLayer(DataLayer):
             sql = 'INSERT INTO results (res, id_address) VALUES (%s, %s)'
             values = (result, address_id)
             cursor.execute(sql, values)
-            return cursor.rowcount
+            return "Inserted successfully " + cursor.rowcount
         finally:
             cursor.close()
 

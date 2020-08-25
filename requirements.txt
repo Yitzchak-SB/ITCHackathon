@@ -46,7 +46,7 @@ virtualenv==20.0.26
 Werkzeug==1.0.1
 wrapt==1.12.1
 
-
+decouple==0.0.7
 pip~=20.2.2
 lxml~=4.5.2
 setuptools~=41.2.0
