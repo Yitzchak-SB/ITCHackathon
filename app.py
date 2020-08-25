@@ -25,7 +25,7 @@ def set_location():
                                   mimetype="application/json")
 
 
-@app.route("/result", methods=["POST"])
+@app.route("/results", methods=["POST"])
 def set_result():
     try:
         data = request.json
@@ -35,7 +35,6 @@ def set_result():
         print(e)
         return app.response_class(response=json.dumps({"message": "Missing data for the request"}), status=400,
                                   mimetype="application/json")
-
 
 
 @app.route("/email", methods=["POST"])
