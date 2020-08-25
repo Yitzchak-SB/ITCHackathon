@@ -37,6 +37,18 @@ def set_result():
                                   mimetype="application/json")
 
 
+@app.route("/address", methods=["POST"])
+def set_address():
+    try:
+        data = request.json
+        return app.response_class(response=json.dumps({"result": data}),
+                                  status=200, mimetype="application/json")
+    except Exception as e:
+        print(e)
+        return app.response_class(response=json.dumps({"message": "Missing data for the request"}), status=400,
+                                  mimetype="application/json")
+
+
 @app.route("/email", methods=["POST"])
 def set_email():
     try:
