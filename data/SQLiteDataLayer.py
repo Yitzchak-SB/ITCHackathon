@@ -1,6 +1,6 @@
 from data.DataLayer import DataLayer
 import mysql.connector
-import decouple
+from decouple import config
 
 class SqlDataLayer(DataLayer):
     def __init__(self):
@@ -11,8 +11,8 @@ class SqlDataLayer(DataLayer):
         try:
             self.__my_sql = mysql.connector.connect(
                 host="127.0.0.1",
-                user="root",
-                password="Tvoiskazeniochi78!",
+                user=config("MYSQL_USER"),
+                password=config("PASSWORD"),
                 database='roofarm'
             )
         except Exception as e:
