@@ -2,3 +2,5 @@
 RooFarm/venv/
 
 RooFarm/.idea/
+
+.env

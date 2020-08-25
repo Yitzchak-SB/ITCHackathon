@@ -1,8 +1,6 @@
-from flask import Flask
-import sqlite3
-from decouple import config
+import mysql.connector
 from data.DataLayer import DataLayer
-
+from decouple import config
 
 class SqlDataLayer(DataLayer):
     def __init__(self):
@@ -11,7 +9,7 @@ class SqlDataLayer(DataLayer):
 
     def __connect(self):
         try:
-            self.__sqliteDb = sqlite3.connect(
+            self.__my_sql = mysql.connector.connect(
                 host="127.0.0.1",
                 user=config('USER'),
                 password=config('PASSWORD'),
@@ -21,16 +19,16 @@ class SqlDataLayer(DataLayer):
             print(e)
 
     def close(self):
-        self.__sqliteDb.close()
+        self.__my_sql.close()
 
     def add_address(self, lat, long):
-        cursor = self.__sqliteDb.cursor()
+        cursor = self.__my_sql.cursor()
         try:
-            self.__sqliteDb.start_transaction()
+            self.__my_sql.start_transaction()
             sql = 'INSERT INTO addresses (lat, long) VALUES (%s, %s)'
             values = (lat, long,)
             cursor.execute(sql, values)
-            self.__sqliteDb.commit()
+            self.__my_sql.commit()
             count = cursor.rowcount
             return ("Inserted successfully " + count)
         except Exception as e:
@@ -38,8 +36,8 @@ class SqlDataLayer(DataLayer):
         finally:
             cursor.close()
 
-    def get_result(self, result, address_id):
-        cursor = self.__sqliteDb.cursor()
+    def add_result(self, result, address_id):
+        cursor = self.__my_sql.cursor()
         try:
             sql = 'INSERT INTO results (res, id_address) VALUES (%s, %s)'
             values = (result, address_id)
@@ -49,23 +47,54 @@ class SqlDataLayer(DataLayer):
             cursor.close()
 
     def add_email(self, email, lat, long):
-        cursor = self.__sqliteDb.cursor()
+        cursor = self.__my_sql.cursor()
         try:
-            users_address = None
+            user_address_id = None
+            user_result_id = None
             sql_address = 'SELECT idaddresses FROM addresses ' \
                           'WHERE lat=%s, long=%s'
-            values = (lat, long)
-            cursor.execute(sql_address, values)
-            self.__sqliteDb.commit()
+            address_values = (lat, long)
+            cursor.execute(sql_address, address_values)
+            self.__my_sql.commit()
             for (id_address) in cursor:
-                users_address = id_address
-            sql_email = 'INSERT INTO users (email, id_user_address) VALUES (%s, %s)'
-            values = (email, users_address)
-            cursor.execute(sql_email, values)
-            self.__sqliteDb.commit()
+                user_address_id = id_address
+            sql_result = 'SELECT id_address FROM roofarm.results ' \
+                         'JOIN roofarm.addresses ' \
+                         'WHERE addresses.lat = %s AND addresses.long = %s'
+            result_values = (lat, long)
+            cursor.execute(sql_result, result_values)
+            for (id_result) in cursor:
+                user_result_id = id_result
+            sql_email = 'INSERT INTO users (email, id_user_address, id_user_result) VALUES (%s, %s, %s)'
+            user_values = (email, user_address_id, user_result_id)
+            cursor.execute(sql_email, user_values)
+            self.__my_sql.commit()
             count = cursor.rowcount
             return ("Inserted successfully " + count)
         except Exception as e:
             return e
         finally:
             cursor.close()
+
+    def get_all_data(self):
+        cursor = self.__my_sql.cursor()
+        user = {}
+        try:
+            sql = "SELECT * FROM roofarm.addresses " \
+                  "INNER JOIN roofarm.results " \
+                  "ON addresses.idaddresses = results.id_address " \
+                  "INNER JOIN roofarm.users " \
+                  "ON addresses.idaddresses = users.id_user_address;"
+            cursor.execute()
+            for (idaddresses, lat, long, idresults, result, id_address, idusers, email,
+                 id_user_address, id_user_result) in cursor:
+                user[idusers] = {
+                    "email": email,
+                    "latitude": lat,
+                    "longitude": long,
+                    "result": result
+                }
+                return user
+        finally:
+            cursor.close()
+            
