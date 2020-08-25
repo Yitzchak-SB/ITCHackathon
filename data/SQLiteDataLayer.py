@@ -6,7 +6,7 @@ from data.DataLayer import DataLayer
 
 class SqlDataLayer(DataLayer):
     def __init__(self):
-        super.__init__(self)
+        super.__init__()
         self.connect()
 
     def __connect(self):
