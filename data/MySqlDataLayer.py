@@ -1,8 +1,7 @@
 from data.DataLayer import DataLayer
 import mysql.connector
-from decouple import config
 
-class SqlDataLayer(DataLayer):
+class MySqlDataLayer(DataLayer):
     def __init__(self):
         super().__init__()
         self.__connect()
@@ -11,8 +10,8 @@ class SqlDataLayer(DataLayer):
         try:
             self.__my_sql = mysql.connector.connect(
                 host="127.0.0.1",
-                user=config("MYSQL_USER"),
-                password=config("PASSWORD"),
+                user="",
+                password="",
                 database='roofarm'
             )
         except Exception as e:
@@ -22,11 +21,8 @@ class SqlDataLayer(DataLayer):
         self.__my_sql.close()
 
     def add_address(self, lat, long):
-
-        print([lat, long])
         try:
             cursor = self.__my_sql.cursor()
-            # self.__my_sql.start_transaction()
             sql = "INSERT INTO roofarm.addresses (latitude, longitude) VALUES (%s, %s)"
             values = (lat, long)
             cursor.execute(sql, values)
@@ -94,7 +90,7 @@ class SqlDataLayer(DataLayer):
                 user_address_id = id_address
             sql_result = 'SELECT id_address FROM roofarm.results ' \
                          'JOIN roofarm.addresses ' \
-                         'WHERE addresses.latitude = %s AND addresses.long = %s'
+                         'WHERE addresses.latitude = %s AND addresses.longitude = %s'
             result_values = (lat, long)
             cursor.execute(sql_result, result_values)
             for (id_result) in cursor:
