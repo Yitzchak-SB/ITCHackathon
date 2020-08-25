@@ -10,8 +10,8 @@ class MySqlDataLayer(DataLayer):
         try:
             self.__my_sql = mysql.connector.connect(
                 host="127.0.0.1",
-                user="",
-                password="",
+                user="root",
+                password="Tvoiskazeniochi78!",
                 database='roofarm'
             )
         except Exception as e:
@@ -34,7 +34,6 @@ class MySqlDataLayer(DataLayer):
             print(e)
         finally:
             cursor.close()
-            self.__my_sql.close()
 
     def get_result(self, latitude, longitude):
         cursor = self.__my_sql.cursor()
@@ -76,32 +75,31 @@ class MySqlDataLayer(DataLayer):
             cursor.close()
             self.__my_sql.close()
 
-    def add_email(self, email, lat, long):
+    def add_email(self, email, latitude, longitude):
         cursor = self.__my_sql.cursor()
         try:
             user_address_id = None
             user_result_id = None
-            sql_address = 'SELECT idaddresses FROM addresses ' \
-                          'WHERE latitude=%s, longitude=%s'
-            address_values = (lat, long)
+            sql_address = 'SELECT idaddresses FROM roofarm.addresses ' \
+                          'WHERE latitude=%s AND longitude=%s'
+            address_values = (latitude, longitude)
             cursor.execute(sql_address, address_values)
-            self.__my_sql.commit()
             for (id_address) in cursor:
                 user_address_id = id_address
-            sql_result = 'SELECT id_address FROM roofarm.results ' \
-                         'JOIN roofarm.addresses ' \
-                         'WHERE addresses.latitude = %s AND addresses.longitude = %s'
-            result_values = (lat, long)
-            cursor.execute(sql_result, result_values)
+            sql_result = 'SELECT idresults FROM roofarm.results ' \
+                         'WHERE id_address=%s'
+            result_value = user_address_id
+            cursor.execute(sql_result, result_value)
             for (id_result) in cursor:
                 user_result_id = id_result
             sql_email = 'INSERT INTO users (email, id_user_address, id_user_result) VALUES (%s, %s, %s)'
-            user_values = (email, user_address_id, user_result_id)
+            user_values = (email, user_address_id[0], user_result_id[0])
             cursor.execute(sql_email, user_values)
             self.__my_sql.commit()
             count = cursor.rowcount
-            return ("Inserted successfully " + count)
+            return ("Inserted successfully " + str(count))
         except Exception as e:
+            print(e)
             return e
         finally:
             cursor.close()
