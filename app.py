@@ -9,8 +9,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 data_layer = MySqlDataLayer()
 
 
-
-
 @app.route("/", methods=["POST"])
 def set_location():
     try:
@@ -31,7 +29,6 @@ def set_location():
 def set_result():
     try:
         data = request.json
-
         return app.response_class(response=json.dumps({"result": data}),
                                   status=200, mimetype="application/json")
     except Exception as e:
