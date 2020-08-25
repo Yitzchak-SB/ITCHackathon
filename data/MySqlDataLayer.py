@@ -1,9 +1,7 @@
-from data.DataLayer import DataLayer
 import mysql.connector
 
-class MySqlDataLayer(DataLayer):
+class MySqlDataLayer():
     def __init__(self):
-        super().__init__()
         self.__connect()
 
     def __connect(self):
