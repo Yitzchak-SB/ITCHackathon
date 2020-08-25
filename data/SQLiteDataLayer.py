@@ -4,10 +4,10 @@ from decouple import config
 from data.DataLayer import DataLayer
 
 
-class SqlDataLayer(DataLayer):
+class SqLiteDataLayer(DataLayer):
     def __init__(self):
-        super.__init__()
-        self.connect()
+        super().__init__()
+        self.__connect()
 
     def __connect(self):
         try:

@@ -1,13 +1,13 @@
 from flask import Flask, request, json
 
 from Validations import Validations
-from data.SQLiteDataLayer import SqlDataLayer
+from data.SQLiteDataLayer import SqLiteDataLayer
 from flask_cors import CORS
 from decimal import *
 
 getcontext()
 
-data_layer = SqlDataLayer()
+data_layer = SqLiteDataLayer()
 app = Flask(__name__)
 cors = CORS(app)
 
