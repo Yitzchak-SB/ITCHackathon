@@ -10,8 +10,8 @@ class MySqlDataLayer(DataLayer):
         try:
             self.__my_sql = mysql.connector.connect(
                 host="127.0.0.1",
-                user="root",
-                password="Tvoiskazeniochi78!",
+                user="",
+                password="",
                 database='roofarm'
             )
         except Exception as e:
