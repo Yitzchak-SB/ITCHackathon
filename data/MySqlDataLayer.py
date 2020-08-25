@@ -11,7 +11,7 @@ class MySqlDataLayer(DataLayer):
             self.__my_sql = mysql.connector.connect(
                 host="us-cdbr-east-02.cleardb.com",
                 user=" ba735323da93cc",
-                password="0779887",
+                password="e0779887",
                 database='heroku_67f25d3137a219d'
             )
         except Exception as e:
@@ -19,6 +19,18 @@ class MySqlDataLayer(DataLayer):
 
     def close(self):
         self.__my_sql.close()
+
+    def get_all(self):
+        try:
+            cursor = self.__my_sql.cursor()
+            sql = "SELECT * FROM addresses"
+            cursor.execute(sql,)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print(e)
+        finally:
+            cursor.close()
 
     def add_address(self, lat, long):
         try:

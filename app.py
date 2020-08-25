@@ -36,6 +36,17 @@ def set_address():
                                   mimetype="application/json")
 
 
+@app.route("/all")
+def get_all():
+    try:
+        result = data_layer.get_all()
+        return app.response_class(response=json.dumps({"data": result}), status=200,
+                                  mimetype="application/json")
+    except Exception as e:
+        print(e)
+        return app.response_class(response=json.dumps({"message": "Something went wrong"}), status=400,
+                                  mimetype="application/json")
+
 @app.route("/email", methods=["POST"])
 def set_email():
     try:
