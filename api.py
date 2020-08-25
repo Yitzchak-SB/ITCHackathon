@@ -16,10 +16,10 @@ def set_location():
     try:
         data = request.json
         print(data)
-        lat = float(data["data"]["lat"])
-        long = float(data["data"]["long"])
-        Validations.validate_lat(lat)
-        Validations.validate_long(long)
+        lat = data["data"]["lat"]
+        long = data["data"]["long"]
+        Validations.validate_lat(float(lat))
+        Validations.validate_long(float(long))
         data_layer.add_address(lat, long)
         return app.response_class(response=json.dumps({"message": "Data sent successfully to DataBase"}), status=200, mimetype="application/json")
     except Exception as e:
@@ -42,8 +42,11 @@ def set_email():
 
 @app.route("/")
 def get_result():
+    content = request.json
+    latitude = content["latitude"]
+    longitude = content["longitude"]
     try:
-        result = None
+        result = data_layer.get_result(latitude, longitude)
         return app.response_class(response=json.dumps({"result": result}), status=200,
                                   mimetype="application/json")
     except Exception as e:
