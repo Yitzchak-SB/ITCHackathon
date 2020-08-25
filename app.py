@@ -12,6 +12,7 @@ cors = CORS(app)
 def set_location():
     try:
         data = request.json
+        print(data)
         latitude = data["latitude"]
         longitude = data["longitude"]
         Validations.validate_lat(float(latitude))
