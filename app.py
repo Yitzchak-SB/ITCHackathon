@@ -12,11 +12,11 @@ cors = CORS(app)
 def set_location():
     try:
         data = request.json
-        lat = data["data"]["lat"]
-        long = data["data"]["long"]
-        Validations.validate_lat(float(lat))
-        Validations.validate_long(float(long))
-        #data_layer.add_address(lat, long)
+        latitude = data["latitude"]
+        longitude = data["longitude"]
+        Validations.validate_lat(float(latitude))
+        Validations.validate_long(float(longitude))
+        data_layer.add_address(latitude, longitude)
         return app.response_class(response=json.dumps({"message": "Data sent successfully to DataBase"}), status=200, mimetype="application/json")
     except Exception as e:
         print(e)
