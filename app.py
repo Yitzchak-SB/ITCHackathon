@@ -78,6 +78,17 @@ def get_result():
         return app.response_class(response=json.dumps({"message": "Missing data for the request"}), status=400,
                                   mimetype="application/json")
 
+@app.route('/file')
+def json_to_database():
+    results = data_layer.json_to_db()
+    response = app.response_class(
+        response={json.dumps(results)},
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
