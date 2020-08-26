@@ -1,6 +1,9 @@
 import mysql.connector
 from flask import Flask, json
 
+from hackaton_ds import find_roof_json
+
+
 class MySqlDataLayer():
     def __init__(self):
         self.__connect()
@@ -197,6 +200,25 @@ class MySqlDataLayer():
 
     def get_data_from_input(self, latitude, longitude):
         try:
+            res_exists = None
+            res_square = None
             cursor = self.__my_sql.cursor()
+            sql = "SELECT EXISTS(SELECT * FROM roofarm.france_addresses " \
+                  "WHERE add_lat = %s AND add_lng = %s);"
+            values = (latitude, longitude)
+            cursor.execute(sql, values)
+            for i in cursor:
+                res_exists = i
+            print(res_exists[0])
+            if res_exists[0] == 1:
+                sql = "SELECT sqrd_meters FROM roofarm.france_addresses WHERE add_lat = %s AND add_lng = %s"
+                values = (latitude, longitude)
+                cursor.execute(sql, values)
+                for res in cursor:
+                    res_square = res
+                print(res_square)
+            elif res_exists[0] == 0:
+                calculation = find_roof_json(latitude, longitude)
+                print(calculation)
         finally:
             cursor.close()
