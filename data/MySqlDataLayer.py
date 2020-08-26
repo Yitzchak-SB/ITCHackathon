@@ -234,3 +234,4 @@ class MySqlDataLayer:
             print("Something went wrong: {}".format(err))
         finally:
             cursor.close()
+            self.__my_sql.close()
