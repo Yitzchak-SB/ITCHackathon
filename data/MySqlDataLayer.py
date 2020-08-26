@@ -1,4 +1,5 @@
 import mysql.connector
+from flask import Flask, json
 
 class MySqlDataLayer():
     def __init__(self):
@@ -7,10 +8,10 @@ class MySqlDataLayer():
     def __connect(self):
         try:
             self.__my_sql = mysql.connector.connect(
-                host="us-cdbr-east-02.cleardb.com",
-                user=" ba735323da93cc",
-                password="e0779887",
-                database='heroku_67f25d3137a219d'
+                host="127.0.0.1",
+                user="root",
+                password="Tvoiskazeniochi78!",
+                database='roofarm'
             )
         except Exception as e:
             print(e)
@@ -137,3 +138,62 @@ class MySqlDataLayer():
         finally:
             cursor.close()
             self.__my_sql.close()
+
+    def json_to_db(self):
+        results = []
+        cursor = self.__my_sql.cursor()
+        address_string = None
+        latitude = None
+        longitude = None
+        location_type = None
+        place_id = None
+        sqr_meters = None
+        address_id = None
+        try:
+            with open('.\\data\\roofs.json', 'r') as read_file:
+                roofs = json.load(read_file)
+                for i in range(0, 182):
+                    if (i == 152):
+                        pass
+                    else:
+                        result = {}
+                        for (key, value) in roofs.items():
+                            result[key] = value[str(i)]
+                        results.append(result)
+                for i in results:
+                    address_string = i['AddressString']
+                    latitude = i['AddLat']
+                    longitude = i['AddLng']
+                    location_type = i['LocationType']
+                    place_id = i['PlaceID']
+                    sqr_meters = i['sqrd_meters']
+                    address_id = i['address_id']
+                    try:
+                        cursor = self.__my_sql.cursor()
+                        sql = "INSERT INTO france_addresses (address_string, add_lat, add_lng, location_type, place_id, " \
+                              "sqrd_meters, address_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+                        values = (address_string, latitude, longitude, location_type, place_id, sqr_meters, address_id)
+                        cursor.execute(sql, values)
+                        self.__my_sql.commit()
+                        count = cursor.rowcount
+                        # return ("Inserted successfully " + str(count))
+                    except Exception as e:
+                        print(e)
+                    finally:
+                        cursor.close()
+                return results
+        except FileNotFoundError as e:
+            print(e)
+
+    def get_square(self, latitude, longitude):
+        cursor = self.__my_sql.cursor()
+        try:
+            result = None
+            sql = "SELECT sqrd_meters FROM roofarm.france_addresses WHERE add_lat = %s AND add_lng = %s"
+            values = (latitude, longitude)
+            cursor.execute(sql, values)
+            for res in cursor:
+                result = res
+            return result
+        finally:
+            cursor.close()

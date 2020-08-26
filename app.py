@@ -74,13 +74,24 @@ def get_result():
     latitude = content["latitude"]
     longitude = content["longitude"]
     try:
-        result = data_layer.get_result(latitude, longitude)
+        result = data_layer.get_square(latitude, longitude)
         return app.response_class(response=json.dumps({"result": result}), status=200,
                                   mimetype="application/json")
     except Exception as e:
         print(e)
         return app.response_class(response=json.dumps({"message": "Missing data for the request"}), status=400,
                                   mimetype="application/json")
+
+@app.route('/file')
+def json_to_database():
+    results = data_layer.json_to_db()
+    response = app.response_class(
+        response={json.dumps(results)},
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
 
 
 if __name__ == "__main__":
