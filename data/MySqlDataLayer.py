@@ -5,26 +5,25 @@ from hackaton_ds import find_roof_json
 
 
 class MySqlDataLayer:
-    def __init__(self):
-        self.__connect()
 
-    def __connect(self):
+    @staticmethod
+    def _connect():
         try:
-            self.__my_sql = mysql.connector.connect(
+            connection = mysql.connector.connect(
                 host="us-cdbr-east-02.cleardb.com",
                 user=" ba735323da93cc",
                 password="e0779887",
                 database="heroku_67f25d3137a219d"
             )
+            return connection
         except Exception as e:
-            print(e)
+            print("connection error: {}".format(e))
 
-    def close(self):
-        self.__my_sql.close()
-
-    def get_all(self):
+    @staticmethod
+    def get_all():
         try:
-            cursor = self.__my_sql.cursor()
+            connection = MySqlDataLayer._connect()
+            cursor = connection.cursor()
             sql = "SELECT * FROM addresses"
             cursor.execute(sql,)
             results = cursor.fetchall()
@@ -33,26 +32,31 @@ class MySqlDataLayer:
             print(e)
         finally:
             cursor.close()
+            connection.close()
 
-    def add_address(self, lat, long):
+    @staticmethod
+    def add_address(lat, long):
         try:
-            cursor = self.__my_sql.cursor()
+            connection = MySqlDataLayer._connect()
+            cursor = connection.cursor()
             sql = "INSERT INTO roofarm.addresses (latitude, longitude) VALUES (%s, %s)"
             values = (lat, long)
             cursor.execute(sql, values)
             print("Success")
-            self.__my_sql.commit()
+            connection.commit()
             count = cursor.rowcount
             return ("Inserted successfully " + str(count))
         except Exception as e:
             print(e)
         finally:
             cursor.close()
+            connection.close()
 
-
-    def get_result(self, latitude, longitude):
-        cursor = self.__my_sql.cursor()
+    @staticmethod
+    def get_result(latitude, longitude):
         try:
+            connection = MySqlDataLayer._connect()
+            cursor = connection.cursor()
             res = None
             adr_id = None
             sql_address = "SELECT idaddresses " \
@@ -78,21 +82,26 @@ class MySqlDataLayer:
             return res
         finally:
             cursor.close()
+            connection.close()
 
-    def add_result(self, result, address_id):
-        cursor = self.__my_sql.cursor()
+    @staticmethod
+    def add_result(result, address_id):
         try:
+            connection = MySqlDataLayer._connect()
+            cursor = connection.cursor()
             sql = "INSERT INTO results (res, id_address) VALUES (%s, %s)"
             values = (result, address_id)
             cursor.execute(sql, values)
             return "Inserted successfully " + cursor.rowcount
         finally:
             cursor.close()
-            self.__my_sql.close()
+            connection.close()
 
-    def add_email(self, email, latitude, longitude):
-        cursor = self.__my_sql.cursor()
+    @staticmethod
+    def add_email(email, latitude, longitude):
         try:
+            connection = MySqlDataLayer._connect()
+            cursor = connection.cursor()
             user_address_id = None
             user_result_id = None
             sql_address = 'SELECT idaddresses FROM roofarm.addresses ' \
@@ -110,7 +119,7 @@ class MySqlDataLayer:
             sql_email = 'INSERT INTO users (email, id_user_address, id_user_result) VALUES (%s, %s, %s)'
             user_values = (email, user_address_id[0], user_result_id[0])
             cursor.execute(sql_email, user_values)
-            self.__my_sql.commit()
+            connection.commit()
             count = cursor.rowcount
             return ("Inserted successfully " + str(count))
         except Exception as e:
@@ -118,12 +127,14 @@ class MySqlDataLayer:
             return e
         finally:
             cursor.close()
-            self.__my_sql.close()
+            connection.close()
 
-    def get_all_data(self):
-        cursor = self.__my_sql.cursor()
+    @staticmethod
+    def get_all_data():
         user = {}
         try:
+            connection = MySqlDataLayer._connect()
+            cursor = connection.cursor()
             sql = "SELECT * FROM addresses " \
                   "INNER JOIN results " \
                   "ON addresses.idaddresses = results.id_address " \
@@ -141,11 +152,13 @@ class MySqlDataLayer:
                 return user
         finally:
             cursor.close()
-            self.__my_sql.close()
+            connection.close()
 
-    def json_to_db(self):
+    @staticmethod
+    def json_to_db():
         results = []
-        cursor = self.__my_sql.cursor()
+        connection = MySqlDataLayer._connect()
+        cursor = connection.cursor()
         address_string = None
         latitude = None
         longitude = None
@@ -168,25 +181,28 @@ class MySqlDataLayer:
                     sqr_meters = i['sqrd_meters']
                     address_id = i['address_id']
                     try:
-                        cursor = self.__my_sql.cursor()
+                        cursor = connection.cursor()
                         sql = "INSERT INTO france_adr (id_address, latitude, longitude, address_str, " \
                               "square_mtr) VALUES (%s, %s, %s, %s, %s)"
                         values = (address_id, latitude, longitude, address_string, sqr_meters)
                         cursor.execute(sql, values)
-                        self.__my_sql.commit()
+                        connection.commit()
                         count = cursor.rowcount
-                        # return ("Inserted successfully " + str(count))
+                        return ("Inserted successfully " + str(count))
                     except Exception as e:
                         print(e)
                     finally:
                         cursor.close()
+                        connection.close()
                 return results
         except FileNotFoundError as e:
             print(e)
 
-    def get_square(self, latitude, longitude):
-        cursor = self.__my_sql.cursor()
+    @staticmethod
+    def get_square(latitude, longitude):
         try:
+            connection = MySqlDataLayer._connect()
+            cursor = connection.cursor()
             result = None
             sql = "SELECT sqrd_meters FROM france_adr WHERE add_lat = %s AND add_lng = %s"
             values = (latitude, longitude)
@@ -196,10 +212,13 @@ class MySqlDataLayer:
             return result
         finally:
             cursor.close()
+            connection.close()
 
-    def get_data_from_input(self, latitude, longitude):
-        cursor = self.__my_sql.cursor()
+    @staticmethod
+    def get_data_from_input(latitude, longitude):
         try:
+            connection = MySqlDataLayer._connect()
+            cursor = connection.cursor()
             res_exists = None
             res_square = None
 
@@ -227,10 +246,10 @@ class MySqlDataLayer:
                               calculation[3], str(calculation[4]))
                 cursor.execute(sql_ins, values_ins)
                 print("Inserted " + str(cursor.rowcount))
-                self.__my_sql.commit()
+                connection.commit()
                 return calculation[4]
         except mysql.connector.Error as err:
             print("Something went wrong: {}".format(err))
         finally:
             cursor.close()
-            self.__my_sql.close()
+            connection.close()
