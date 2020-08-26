@@ -7,7 +7,6 @@ data_layer = MySqlDataLayer()
 app = Flask(__name__)
 cors = CORS(app)
 
-
 @app.route("/", methods=["POST"])
 def set_location():
     try:
