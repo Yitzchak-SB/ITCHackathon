@@ -49,6 +49,7 @@ class MySqlDataLayer:
         finally:
             cursor.close()
 
+
     def get_result(self, latitude, longitude):
         cursor = self.__my_sql.cursor()
         try:
