@@ -150,16 +150,13 @@ class MySqlDataLayer():
         sqr_meters = None
         address_id = None
         try:
-            with open('.\\data\\roofs.json', 'r') as read_file:
+            with open('.\\data\\roofs2.json', 'r') as read_file:
                 roofs = json.load(read_file)
-                for i in range(0, 182):
-                    if (i == 152):
-                        pass
-                    else:
-                        result = {}
-                        for (key, value) in roofs.items():
-                            result[key] = value[str(i)]
-                        results.append(result)
+                for i in range(0, 5535):
+                    result = {}
+                    for (key, value) in roofs.items():
+                        result[key] = value[str(i)]
+                    results.append(result)
                 for i in results:
                     address_string = i['AddressString']
                     latitude = i['AddLat']
@@ -195,5 +192,11 @@ class MySqlDataLayer():
             for res in cursor:
                 result = res
             return result
+        finally:
+            cursor.close()
+
+    def get_data_from_input(self, latitude, longitude):
+        try:
+            cursor = self.__my_sql.cursor()
         finally:
             cursor.close()
