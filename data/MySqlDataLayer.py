@@ -7,15 +7,15 @@ from hackaton_ds import find_roof_json
 class MySqlDataLayer:
     def __init__(self):
         self.__connect()
-        self.__my_sql = self.__connect()
 
     def __connect(self):
         try:
-            return mysql.connector.connect(
-                host="",
-                user="",
-                password="",
-                database='')
+            self.__my_sql = mysql.connector.connect(
+                host="us-cdbr-east-02.cleardb.com",
+                user=" ba735323da93cc",
+                password="e0779887",
+                database="heroku_67f25d3137a219d"
+            )
         except Exception as e:
             print(e)
 
