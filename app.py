@@ -70,7 +70,7 @@ def get_result():
     latitude = content["latitude"]
     longitude = content["longitude"]
     try:
-        result = data_layer.get_result(latitude, longitude)
+        result = data_layer.get_square(latitude, longitude)
         return app.response_class(response=json.dumps({"result": result}), status=200,
                                   mimetype="application/json")
     except Exception as e:
