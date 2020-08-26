@@ -58,6 +58,17 @@ def get_result():
                                   mimetype="application/json")
 
 
+@app.route("/test")
+def get_result():
+    try:
+        return app.response_class(response=json.dumps({"result": "app is running"}), status=200,
+                                  mimetype="application/json")
+    except Exception as e:
+        print(e)
+        return app.response_class(response=json.dumps({"message": "Missing data for the request"}), status=400,
+                                  mimetype="application/json")
+
+
 @app.route('/file')
 def json_to_database():
     results = data_layer.json_to_db()
