@@ -230,5 +230,7 @@ class MySqlDataLayer:
                 self.__my_sql.commit()
 
                 return calculation[4]
+        except Exception as err:
+            print("Something went wrong: {}".format(err))
         finally:
             cursor.close()
