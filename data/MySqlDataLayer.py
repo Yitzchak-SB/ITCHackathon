@@ -164,15 +164,13 @@ class MySqlDataLayer():
                     address_string = i['AddressString']
                     latitude = i['AddLat']
                     longitude = i['AddLng']
-                    location_type = i['LocationType']
-                    place_id = i['PlaceID']
                     sqr_meters = i['sqrd_meters']
                     address_id = i['address_id']
                     try:
                         cursor = self.__my_sql.cursor()
-                        sql = "INSERT INTO france_addresses (address_string, add_lat, add_lng, location_type, place_id, " \
-                              "sqrd_meters, address_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-                        values = (address_string, latitude, longitude, location_type, place_id, sqr_meters, address_id)
+                        sql = "INSERT INTO france_adr (id_address, latitude, longitude, address_str, " \
+                              "square_mtr) VALUES (%s, %s, %s, %s, %s)"
+                        values = (address_id, latitude, longitude, address_string, sqr_meters)
                         cursor.execute(sql, values)
                         self.__my_sql.commit()
                         count = cursor.rowcount
@@ -216,9 +214,19 @@ class MySqlDataLayer():
                 cursor.execute(sql, values)
                 for res in cursor:
                     res_square = res
-                print(res_square)
+                print(res_square[0])
+                return res_square[0]
             elif res_exists[0] == 0:
                 calculation = find_roof_json(latitude, longitude)
                 print(calculation)
+                sql_ins = "INSERT INTO france_adr (id_address, latitude, longitude, address_str, " \
+                              "square_mtr) VALUES (%s, %s, %s, %s, %s)"
+                values_ins = (calculation[0], str(calculation[1]), str(calculation[2]),
+                              calculation[3], str(calculation[4]))
+                cursor.execute(sql_ins, values_ins)
+                print("Inserted " + str(cursor.rowcount))
+                self.__my_sql.commit()
+
+                return calculation[4]
         finally:
             cursor.close()
