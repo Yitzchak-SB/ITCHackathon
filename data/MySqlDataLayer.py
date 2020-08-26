@@ -4,17 +4,17 @@ from flask import Flask, json
 from hackaton_ds import find_roof_json
 
 
-class MySqlDataLayer():
+class MySqlDataLayer:
     def __init__(self):
         self.__connect()
 
     def __connect(self):
         try:
             self.__my_sql = mysql.connector.connect(
-                host="127.0.0.1",
-                user="root",
-                password="Tvoiskazeniochi78!",
-                database='roofarm'
+                host="",
+                user="",
+                password="",
+                database=''
             )
         except Exception as e:
             print(e)
@@ -123,8 +123,8 @@ class MySqlDataLayer():
         cursor = self.__my_sql.cursor()
         user = {}
         try:
-            sql = "SELECT * FROM roofarm.addresses " \
-                  "INNER JOIN roofarm.results " \
+            sql = "SELECT * FROM addresses " \
+                  "INNER JOIN results " \
                   "ON addresses.idaddresses = results.id_address " \
                   "INNER JOIN roofarm.users " \
                   "ON addresses.idaddresses = users.id_user_address;"
@@ -187,7 +187,7 @@ class MySqlDataLayer():
         cursor = self.__my_sql.cursor()
         try:
             result = None
-            sql = "SELECT sqrd_meters FROM roofarm.france_addresses WHERE add_lat = %s AND add_lng = %s"
+            sql = "SELECT sqrd_meters FROM france_adr WHERE add_lat = %s AND add_lng = %s"
             values = (latitude, longitude)
             cursor.execute(sql, values)
             for res in cursor:
@@ -197,19 +197,20 @@ class MySqlDataLayer():
             cursor.close()
 
     def get_data_from_input(self, latitude, longitude):
+        cursor = self.__my_sql.cursor()
         try:
             res_exists = None
             res_square = None
-            cursor = self.__my_sql.cursor()
-            sql = "SELECT EXISTS(SELECT * FROM roofarm.france_addresses " \
-                  "WHERE add_lat = %s AND add_lng = %s);"
+
+            sql = "SELECT EXISTS(SELECT * FROM france_adr " \
+                  "WHERE latitude = %s AND longitude = %s);"
             values = (latitude, longitude)
             cursor.execute(sql, values)
             for i in cursor:
                 res_exists = i
             print(res_exists[0])
             if res_exists[0] == 1:
-                sql = "SELECT sqrd_meters FROM roofarm.france_addresses WHERE add_lat = %s AND add_lng = %s"
+                sql = "SELECT square_mtr FROM france_adr WHERE latitude = %s AND longitude = %s"
                 values = (latitude, longitude)
                 cursor.execute(sql, values)
                 for res in cursor:
