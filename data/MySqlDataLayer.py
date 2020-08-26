@@ -7,10 +7,11 @@ from hackaton_ds import find_roof_json
 class MySqlDataLayer:
     def __init__(self):
         self.__connect()
+        self.__my_sql = self.__connect()
 
     def __connect(self):
         try:
-            self.__my_sql = mysql.connector.connect(
+            return mysql.connector.connect(
                 host="",
                 user="",
                 password="",
