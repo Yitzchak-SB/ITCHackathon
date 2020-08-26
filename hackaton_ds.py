@@ -80,11 +80,7 @@ def calc_area(lat, lng):
         return area_roof
 
 
-def find_roof_json(request):
-    with open(request) as json_file:
-        data = json.load(json_file)
-        lat = data['lat']
-        lng = data['lng']
+def find_roof_json(lat, lng):
 
         gmaps = googlemaps.Client(key='AIzaSyDks1m0UBovbzm4QR8Ja7axR-S6DpiK-ig')
         ReverseGeocodeResult = gmaps.reverse_geocode((lat, lng))
@@ -98,10 +94,9 @@ def find_roof_json(request):
         # We only want rooftops (no parks or other structures), so only add to the
         # database if the 'location_type' == 'ROOFTOP'
         LocationType = GeocodeResult[0]['geometry']['location_type']
-
         if LocationType == 'ROOFTOP':
             try:
-                ad_id = str(round(lat, 6)) + '-' + str(round(lng, 6))
+                ad_id = str(round(float(lat), 6)) + '-' + str(round(float(lng), 6))
                 sqrd_meter = calc_area(lat, lng)
                 return (ad_id, lat, lng, AddressString, sqrd_meter)
 
