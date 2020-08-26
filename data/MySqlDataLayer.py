@@ -229,14 +229,8 @@ class MySqlDataLayer:
                 print("Inserted " + str(cursor.rowcount))
                 self.__my_sql.commit()
                 return calculation[4]
-<<<<<<< Updated upstream
         except mysql.connector.Error as err:
             print("Something went wrong: {}".format(err))
-=======
-        except mysql.connector.Error as e:
-            print(e)
-            return e
->>>>>>> Stashed changes
         finally:
             cursor.close()
             self.__my_sql.close()
