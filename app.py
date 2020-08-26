@@ -3,11 +3,10 @@ from Validations import Validations
 from data.MySqlDataLayer import MySqlDataLayer
 from flask_cors import CORS
 
-from hackaton_ds import find_roof_json
-
 data_layer = MySqlDataLayer()
 app = Flask(__name__)
 cors = CORS(app)
+
 
 @app.route("/", methods=["POST"])
 def set_location():
@@ -26,29 +25,6 @@ def set_location():
         return app.response_class(response=json.dumps({"message": "Missing data for the request"}), status=400,
                                   mimetype="application/json")
 
-
-@app.route("/address", methods=["POST"])
-def set_address():
-    try:
-        data = request.json
-        return app.response_class(response=json.dumps({"message": data}), status=200,
-                                  mimetype="application/json")
-    except Exception as e:
-        print(e)
-        return app.response_class(response=json.dumps({"message": "Missing data for the request"}), status=400,
-                                  mimetype="application/json")
-
-
-@app.route("/all")
-def get_all():
-    try:
-        result = data_layer.get_all()
-        return app.response_class(response=json.dumps({"data": result}), status=200,
-                                  mimetype="application/json")
-    except Exception as e:
-        print(e)
-        return app.response_class(response=json.dumps({"message": "Something went wrong"}), status=400,
-                                  mimetype="application/json")
 
 @app.route("/email", methods=["POST"])
 def set_email():
@@ -80,6 +56,7 @@ def get_result():
         print(e)
         return app.response_class(response=json.dumps({"message": "Missing data for the request"}), status=400,
                                   mimetype="application/json")
+
 
 @app.route('/file')
 def json_to_database():
