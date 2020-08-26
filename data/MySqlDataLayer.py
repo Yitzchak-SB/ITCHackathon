@@ -11,10 +11,10 @@ class MySqlDataLayer:
     def __connect(self):
         try:
             self.__my_sql = mysql.connector.connect(
-                host="",
-                user="",
-                password="",
-                database=''
+                host="us-cdbr-east-02.cleardb.com",
+                user=" ba735323da93cc",
+                password="e0779887",
+                database="heroku_67f25d3137a219d"
             )
         except Exception as e:
             print(e)
