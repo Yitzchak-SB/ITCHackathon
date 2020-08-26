@@ -17,11 +17,11 @@ def set_location():
         print(data)
         latitude = data["latitude"]
         longitude = data["longitude"]
-        Validations.validate_lat(float(latitude))
-        Validations.validate_long(float(longitude))
-        find_roof_json()
-        data_layer.add_address(latitude, longitude)
-        return app.response_class(response=json.dumps({"message": "Data sent successfully to DataBase"}), status=200, mimetype="application/json")
+        Validations.validate_lat(latitude)
+        Validations.validate_long(longitude)
+        square = data_layer.get_data_from_input(latitude, longitude)
+        result = {"latitude": latitude, "longitude": longitude, "square": square}
+        return app.response_class(response=json.dumps(result), status=200, mimetype="application/json")
     except Exception as e:
         print(e)
         return app.response_class(response=json.dumps({"message": "Missing data for the request"}), status=400,
