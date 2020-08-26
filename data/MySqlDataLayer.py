@@ -227,7 +227,9 @@ class MySqlDataLayer:
                 cursor.execute(sql_ins, values_ins)
                 print("Inserted " + str(cursor.rowcount))
                 self.__my_sql.commit()
-
                 return calculation[4]
+        except mysql.connector.Error as e:
+            print(e)
+            return e
         finally:
             cursor.close()

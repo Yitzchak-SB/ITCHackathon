@@ -94,6 +94,7 @@ def find_roof_json(lat, lng):
         # We only want rooftops (no parks or other structures), so only add to the
         # database if the 'location_type' == 'ROOFTOP'
         LocationType = GeocodeResult[0]['geometry']['location_type']
+
         if LocationType == 'ROOFTOP':
             try:
                 ad_id = str(round(float(lat), 6)) + '-' + str(round(float(lng), 6))
