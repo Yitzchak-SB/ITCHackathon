@@ -3,6 +3,8 @@ from Validations import Validations
 from data.MySqlDataLayer import MySqlDataLayer
 from flask_cors import CORS
 
+from hackaton_ds import find_roof_json
+
 data_layer = MySqlDataLayer()
 app = Flask(__name__)
 cors = CORS(app)
@@ -16,6 +18,7 @@ def set_location():
         longitude = data["longitude"]
         Validations.validate_lat(float(latitude))
         Validations.validate_long(float(longitude))
+        find_roof_json()
         data_layer.add_address(latitude, longitude)
         return app.response_class(response=json.dumps({"message": "Data sent successfully to DataBase"}), status=200, mimetype="application/json")
     except Exception as e:
@@ -62,6 +65,7 @@ def set_email():
         print(e)
         return app.response_class(response=json.dumps({"message": "Missing data for the request"}), status=400,
                                   mimetype="application/json")
+
 
 @app.route("/")
 def get_result():
