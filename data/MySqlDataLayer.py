@@ -218,13 +218,15 @@ class MySqlDataLayer():
                 return res_square[0]
             elif res_exists[0] == 0:
                 calculation = find_roof_json(latitude, longitude)
+                print(calculation)
                 sql_ins = "INSERT INTO france_adr (id_address, latitude, longitude, address_str, " \
                               "square_mtr) VALUES (%s, %s, %s, %s, %s)"
-                values_ins = (calculation[0], str(calculation[1]), str(calculation[2]), calculation[3], calculation[4])
+                values_ins = (calculation[0], str(calculation[1]), str(calculation[2]),
+                              calculation[3], str(calculation[4]))
                 cursor.execute(sql_ins, values_ins)
                 print("Inserted " + str(cursor.rowcount))
                 self.__my_sql.commit()
-                print(calculation)
+
                 return calculation[4]
         finally:
             cursor.close()
