@@ -10,6 +10,7 @@ cors = CORS(app)
 
 @app.route("/", methods=["POST"])
 def set_location():
+    result = None
     try:
         data = request.json
         print(data)
@@ -18,11 +19,11 @@ def set_location():
         Validations.validate_lat(latitude)
         Validations.validate_long(longitude)
         square = data_layer.get_data_from_input(latitude, longitude)
-        result = {"latitude": latitude, "longitude": longitude, "square": square}
+        result = {"latitude": latitude, "longitude": longitude, "square": float(square)}
         return app.response_class(response=json.dumps(result), status=200, mimetype="application/json")
     except Exception as e:
         print(e)
-        return app.response_class(response=json.dumps({"message": "Missing data for the request"}), status=400,
+        return app.response_class(response=json.dumps("This is not a rooftop"), status=400,
                                   mimetype="application/json")
 
 
