@@ -15,8 +15,7 @@ class MySqlDataLayer:
                 host="",
                 user="",
                 password="",
-                database=''
-            )
+                database='')
         except Exception as e:
             print(e)
 
