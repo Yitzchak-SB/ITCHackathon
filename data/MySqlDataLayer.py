@@ -8,10 +8,10 @@ class MySqlDataLayer():
     def __connect(self):
         try:
             self.__my_sql = mysql.connector.connect(
-                host="us-cdbr-east-02.cleardb.com",
-                user=" ba735323da93cc",
-                password="e0779887",
-                database='heroku_67f25d3137a219d'
+                host="127.0.0.1",
+                user="root",
+                password="Tvoiskazeniochi78!",
+                database='roofarm'
             )
         except Exception as e:
             print(e)
@@ -185,6 +185,15 @@ class MySqlDataLayer():
         except FileNotFoundError as e:
             print(e)
 
-
-
-
+    def get_square(self, latitude, longitude):
+        cursor = self.__my_sql.cursor()
+        try:
+            result = None
+            sql = "SELECT sqrd_meters FROM roofarm.france_addresses WHERE add_lat = %s AND add_lng = %s"
+            values = (latitude, longitude)
+            cursor.execute(sql, values)
+            for res in cursor:
+                result = res
+            return result
+        finally:
+            cursor.close()
