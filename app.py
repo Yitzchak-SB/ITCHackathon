@@ -59,7 +59,7 @@ def get_result():
 
 
 @app.route("/test")
-def get_result():
+def test():
     try:
         return app.response_class(response=json.dumps({"result": "app is running"}), status=200,
                                   mimetype="application/json")
