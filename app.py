@@ -24,7 +24,7 @@ def set_location():
         longitude = GeocodeResult[0]['geometry']["location"]["lng"]
         Validations.validate_lat(latitude)
         Validations.validate_long(longitude)
-        square = data_layer.get_data_from_input(latitude, longitude)
+        square = data_layer.get_data_from_input(latitude, longitude, data["address"])
         result = {"latitude": latitude, "longitude": longitude, "square": float(square)}
         return app.response_class(response=json.dumps(result), status=200, mimetype="application/json")
     except Exception as e:

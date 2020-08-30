@@ -215,7 +215,7 @@ class MySqlDataLayer:
             connection.close()
 
     @staticmethod
-    def get_data_from_input(latitude, longitude):
+    def get_data_from_input(latitude, longitude, address):
         try:
             connection = MySqlDataLayer._connect()
             cursor = connection.cursor()
@@ -238,7 +238,7 @@ class MySqlDataLayer:
                 print(res_square[0])
                 return res_square[0]
             elif res_exists[0] == 0:
-                calculation = find_roof_json(latitude, longitude)
+                calculation = find_roof_json(latitude, longitude, address)
                 print(calculation)
                 sql_ins = "INSERT INTO france_adr (id_address, latitude, longitude, address_str, " \
                               "square_mtr) VALUES (%s, %s, %s, %s, %s)"
