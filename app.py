@@ -1,3 +1,4 @@
+import requests
 from flask import Flask, request, json
 from Validations import Validations
 from data.MySqlDataLayer import MySqlDataLayer
@@ -13,9 +14,9 @@ def set_location():
     result = None
     try:
         data = request.json
-        print(data)
-        latitude = data["latitude"]
-        longitude = data["longitude"]
+        response = requests.get("https://us1.locationiq.com/v1/search.php?key=4dd6358a6c3c9e&q={}&format=json".format(data["address"])).json()
+        latitude = float(response[0]["lat"])
+        longitude = float(response[0]["lon"])
         Validations.validate_lat(latitude)
         Validations.validate_long(longitude)
         square = data_layer.get_data_from_input(latitude, longitude)
