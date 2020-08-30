@@ -80,11 +80,11 @@ def calc_area(lat, lng):
         return area_roof
 
 
-def find_roof_json(lat, lng):
+def find_roof_json(lat, lng, address):
 
         gmaps = googlemaps.Client(key='AIzaSyDks1m0UBovbzm4QR8Ja7axR-S6DpiK-ig')
-        ReverseGeocodeResult = gmaps.reverse_geocode((lat, lng))
-        AddressString = ReverseGeocodeResult[0]['formatted_address']
+        #ReverseGeocodeResult = gmaps.reverse_geocode((lat, lng))
+        AddressString = address #ReverseGeocodeResult[0]['formatted_address']
 
         # if address is not already in dataframe AND LocationType is a rooftop,
         # get the new address coordinates and populate the dataframe

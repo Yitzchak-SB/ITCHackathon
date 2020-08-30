@@ -1,3 +1,4 @@
+import googlemaps
 import requests
 from flask import Flask, request, json
 from Validations import Validations
@@ -16,13 +17,14 @@ def set_location():
     result = None
     try:
         data = request.json
-        response = requests.get("https://us1.locationiq.com/v1/search.php?key=4dd6358a6c3c9e&q={}&format=json".format(data["address"])).json()
-        latitude = float(response[0]["lat"])
-        longitude = float(response[0]["lon"])
+        gmaps = googlemaps.Client(key='AIzaSyDks1m0UBovbzm4QR8Ja7axR-S6DpiK-ig')
+        GeocodeResult = gmaps.geocode(data["address"])
+        print(GeocodeResult[0]['geometry']["location"])
+        latitude = GeocodeResult[0]['geometry']["location"]["lat"]
+        longitude = GeocodeResult[0]['geometry']["location"]["lng"]
         Validations.validate_lat(latitude)
         Validations.validate_long(longitude)
-        #square = data_layer.get_data_from_input(latitude, longitude)
-        square = find_roof_json(latitude, longitude)
+        square = data_layer.get_data_from_input(latitude, longitude)
         result = {"latitude": latitude, "longitude": longitude, "square": float(square)}
         return app.response_class(response=json.dumps(result), status=200, mimetype="application/json")
     except Exception as e:
